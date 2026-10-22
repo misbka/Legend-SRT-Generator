@@ -1,0 +1,213 @@
+/* ═══════════════════════════════════════════════════════════
+   base.css — variáveis globais, reset e utilitários
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* Paleta */
+  --bg: #070b14;
+  --bg-2: #0b1120;
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.075);
+  --surface-3: rgba(255, 255, 255, 0.11);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
+
+  --text: #eaeef8;
+  --text-muted: #98a4bd;
+  --text-dim: #68738d;
+
+  --accent: #6c5ce7;
+  --accent-2: #38bdf8;
+  --accent-3: #a78bfa;
+  --accent-grad: linear-gradient(135deg, #6c5ce7 0%, #4f46e5 45%, #38bdf8 100%);
+  --accent-soft: rgba(108, 92, 231, 0.16);
+
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.14);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --rec: #ff4d6d;
+
+  /* Forma */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --radius-xs: 9px;
+  --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.25);
+
+  /* Tipografia */
+  --font: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  /* Movimento */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: rgba(108, 92, 231, 0.45);
+  color: #fff;
+}
+
+/* ── Fundo decorativo ── */
+.bg-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-glow-1 {
+  width: 620px;
+  height: 620px;
+  top: -220px;
+  left: -160px;
+  background: radial-gradient(circle, rgba(108, 92, 231, 0.55), transparent 70%);
+}
+
+.bg-glow-2 {
+  width: 720px;
+  height: 720px;
+  bottom: -300px;
+  right: -220px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.35), transparent 70%);
+}
+
+/* ── Scrollbar ── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.26);
+  background-clip: content-box;
+}
+
+/* ── Utilitários ── */
+.muted {
+  color: var(--text-muted);
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  font-family: var(--font);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+/* Animações reutilizáveis */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-rec {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.82); }
+}

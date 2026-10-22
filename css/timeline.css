@@ -1,0 +1,304 @@
+/* ═══════════════════════════════════════════════════════════
+   timeline.css — linha do tempo de legendas (estilo CapCut)
+   Blocos proporcionais à duração, régua, playhead e bordas
+   arrastáveis para ajuste fino da sincronização.
+   ═══════════════════════════════════════════════════════════ */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 12px 14px 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+}
+
+.timeline-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timeline-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.timeline-title {
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.timeline-count {
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeline-controls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tl-zoom-slider {
+  width: 92px;
+}
+
+/* ── Área rolável ── */
+.timeline-scroll {
+  position: relative;
+  height: 92px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 11px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.2)),
+    rgba(0, 0, 0, 0.34);
+  border: 1px solid var(--border);
+  touch-action: pan-x;
+}
+
+.timeline-canvas {
+  position: relative;
+  min-width: 100%;
+  height: 100%;
+}
+
+.timeline-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 18px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  z-index: 4;
+}
+
+.timeline-placeholder.is-hidden {
+  display: none;
+}
+
+/* ── Régua de tempos ── */
+.timeline-ruler {
+  position: relative;
+  height: 24px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  cursor: ew-resize;
+}
+
+.tl-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.tl-tick.is-major {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.tl-tick span {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* ── Trilha de legendas ── */
+.timeline-track {
+  position: relative;
+  height: calc(100% - 24px);
+  cursor: ew-resize;
+}
+
+.tl-block {
+  position: absolute;
+  top: 10px;
+  height: 42px;
+  min-width: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #7d6ef6 0%, #5b4bd6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  cursor: grab;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  transition: box-shadow 0.16s var(--ease), filter 0.16s var(--ease);
+}
+
+.tl-block:hover {
+  filter: brightness(1.14);
+}
+
+.tl-block:active {
+  cursor: grabbing;
+}
+
+.tl-block.is-selected {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55), 0 6px 16px rgba(0, 0, 0, 0.45);
+  z-index: 3;
+}
+
+.tl-block.is-recording {
+  border-color: var(--rec);
+  box-shadow: 0 0 0 2px rgba(255, 77, 109, 0.5), 0 6px 16px rgba(0, 0, 0, 0.45);
+  animation: tl-pulse 1.2s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes tl-pulse {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.35); }
+}
+
+.tl-cc {
+  flex-shrink: 0;
+  display: none;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 2px 4px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tl-label {
+  font-size: 11px;
+  font-weight: 650;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: none;
+}
+
+/* Só mostra ícone/ texto quando o bloco é largo o bastante */
+.tl-block.has-icon .tl-cc { display: inline-flex; }
+.tl-block.has-label .tl-label { display: block; }
+
+/* Bordas arrastáveis */
+.tl-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 11px;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.tl-edge-start { left: -3px; }
+.tl-edge-end { right: -3px; }
+
+.tl-edge::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 16px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.85);
+  opacity: 0;
+  transition: opacity 0.15s var(--ease);
+}
+
+.tl-block:hover .tl-edge::after,
+.tl-block.is-selected .tl-edge::after,
+.tl-block.is-recording .tl-edge::after {
+  opacity: 1;
+}
+
+/* ── Playhead ── */
+.timeline-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: #ffffff;
+  z-index: 6;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.55);
+}
+
+.tl-playhead-knob {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 11px;
+  height: 9px;
+  border-radius: 0 0 5px 5px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* ── Bolha de tempo durante o arraste ── */
+.tl-tip {
+  position: absolute;
+  top: 2px;
+  z-index: 7;
+  transform: translateX(-50%);
+  padding: 3px 8px;
+  border-radius: 7px;
+  background: rgba(8, 12, 22, 0.95);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tl-tip[hidden] {
+  display: none;
+}
+
+/* ── Dicas ── */
+.timeline-hint {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.timeline-hint strong {
+  color: var(--text-muted);
+  font-weight: 650;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 680px) {
+  .timeline-toolbar {
+    justify-content: center;
+  }
+
+  .timeline-hint {
+    font-size: 10.5px;
+  }
+}

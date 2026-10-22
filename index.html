@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Legendário — Estúdio profissional de legendas SRT com sincronismo em tempo real.">
+  <title>Legendário · Gerador de Legendas SRT</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236c5ce7'/%3E%3Crect x='6' y='17' width='20' height='3.4' rx='1.7' fill='white'/%3E%3Crect x='9' y='23' width='14' height='3.4' rx='1.7' fill='white' opacity='.7'/%3E%3Cpath d='M16 5l9 8h-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/timeline.css">
+</head>
+<body>
+
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+  <div class="app">
+
+    <!-- ══════════════ TOPO ══════════════ -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3l9 8H3z" fill="currentColor" opacity=".95"/>
+            <rect x="4" y="14.5" width="16" height="2.8" rx="1.4" fill="currentColor"/>
+            <rect x="7" y="19.4" width="10" height="2.8" rx="1.4" fill="currentColor" opacity=".65"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <strong>Legendário</strong>
+          <small>Estúdio de legendas SRT</small>
+        </span>
+      </div>
+
+      <ol class="steps" id="steps">
+        <li class="step" data-step="media">
+          <span class="step-dot">1</span>
+          <span class="step-label">Mídia</span>
+        </li>
+        <li class="step" data-step="script">
+          <span class="step-dot">2</span>
+          <span class="step-label">Roteiro</span>
+        </li>
+        <li class="step" data-step="sync">
+          <span class="step-dot">3</span>
+          <span class="step-label">Sincronizar</span>
+        </li>
+        <li class="step" data-step="export">
+          <span class="step-dot">4</span>
+          <span class="step-label">Exportar</span>
+        </li>
+      </ol>
+
+      <div class="topbar-actions">
+        <button class="btn btn-primary" id="btn-export-top" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Exportar .SRT
+        </button>
+      </div>
+    </header>
+
+    <!-- ══════════════ ÁREA DE TRABALHO ══════════════ -->
+    <main class="workspace">
+
+      <!-- ── Painel de mídia ── -->
+      <section class="panel media-panel">
+        <div class="panel-head">
+          <h2>Pré-visualização</h2>
+          <div class="panel-head-actions">
+            <span class="badge badge-muted" id="media-badge">Nenhuma mídia carregada</span>
+            <button class="btn btn-ghost btn-sm" id="btn-swap-media" type="button" hidden>Trocar mídia</button>
+          </div>
+        </div>
+
+        <div class="stage" id="media-stage">
+          <video id="video" playsinline preload="metadata"></video>
+
+          <div class="audio-card" id="audio-card" hidden>
+            <div class="eq" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="audio-info">
+              <strong id="audio-name">Áudio</strong>
+              <small id="audio-meta">Arquivo de áudio carregado</small>
+            </div>
+            <audio id="audio" preload="metadata"></audio>
+          </div>
+
+          <div class="subtitle-overlay" id="subtitle-overlay" aria-hidden="true">
+            <span id="subtitle-text"></span>
+          </div>
+
+          <div class="dropzone" id="dropzone-media" role="button" tabindex="0" aria-label="Selecionar vídeo ou áudio">
+            <span class="dropzone-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="3"/>
+                <path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/>
+              </svg>
+            </span>
+            <h3>Arraste um vídeo ou áudio</h3>
+            <p>MP4, WebM, MOV, MP3, WAV, M4A, OGG…</p>
+            <button class="btn btn-primary" id="btn-pick-media" type="button">Escolher arquivo</button>
+            <input type="file" id="media-file-input" accept="video/*,audio/*,.mkv,.mov,.avi,.flac" hidden>
+          </div>
+        </div>
+
+        <div class="transport" id="transport">
+          <button class="icon-btn" id="btn-back5" type="button" title="Voltar 5 segundos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="11 17 6 12 11 7"/>
+              <path d="M6 12h8a4 4 0 0 1 0 8h-1"/>
+            </svg>
+          </button>
+
+          <button class="play-btn" id="btn-play" type="button" title="Reproduzir / Pausar (Espaço)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="7 4 20 12 7 20" fill="currentColor"/></svg>
+          </button>
+
+          <button class="icon-btn" id="btn-fwd5" type="button" title="Avançar 5 segundos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="13 17 18 12 13 7"/>
+              <path d="M18 12h-8a4 4 0 0 0 0 8h1"/>
+            </svg>
+          </button>
+
+          <div class="transport-time">
+            <span id="time-current">00:00.000</span>
+            <span class="sep">/</span>
+            <span class="muted" id="time-duration">00:00.000</span>
+          </div>
+
+          <input type="range" class="seek" id="seek" min="0" max="100" step="0.01" value="0" aria-label="Barra de progresso">
+
+          <div class="volume-group">
+            <button class="icon-btn icon-btn-sm" id="btn-mute" type="button" title="Silenciar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"/>
+                <path d="M15.5 8.5a5 5 0 0 1 0 7"/>
+                <path d="M18.5 5.5a9 9 0 0 1 0 13"/>
+              </svg>
+            </button>
+            <input type="range" class="volume" id="volume" min="0" max="1" step="0.01" value="1" aria-label="Volume">
+          </div>
+
+          <select class="select select-sm" id="speed" title="Velocidade de reprodução" aria-label="Velocidade">
+            <option value="0.5">0,5×</option>
+            <option value="0.75">0,75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1,25×</option>
+            <option value="1.5">1,5×</option>
+            <option value="2">2×</option>
+          </select>
+
+          <button class="icon-btn icon-btn-sm" id="btn-fullscreen" type="button" title="Tela cheia">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
+              <path d="M16 3h3a2 2 0 0 1 2 2v3"/>
+              <path d="M8 21H5a2 2 0 0 1-2-2v-3"/>
+              <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- ══ Linha do tempo (estilo CapCut) ══ -->
+        <div class="timeline" id="timeline">
+          <div class="timeline-toolbar">
+            <div class="timeline-heading">
+              <span class="timeline-title">Linha do tempo</span>
+              <span class="muted timeline-count" id="tl-count">sem legendas</span>
+            </div>
+            <div class="timeline-controls">
+              <button class="icon-btn icon-btn-sm" id="tl-zoom-out" type="button" title="Diminuir zoom">−</button>
+              <input type="range" class="tl-zoom-slider" id="tl-zoom" min="1" max="8" step="0.5" value="1" aria-label="Zoom da linha do tempo">
+              <button class="icon-btn icon-btn-sm" id="tl-zoom-in" type="button" title="Aumentar zoom">+</button>
+              <button class="btn btn-ghost btn-sm" id="tl-fit" type="button" title="Ajustar a duração inteira">Ajustar</button>
+            </div>
+          </div>
+
+          <div class="timeline-scroll" id="timeline-scroll">
+            <div class="timeline-placeholder" id="tl-placeholder">
+              Arraste e solte a mídia aqui para ver a linha do tempo
+            </div>
+            <div class="timeline-canvas" id="timeline-canvas">
+              <div class="timeline-ruler" id="timeline-ruler"></div>
+              <div class="timeline-track" id="timeline-track"></div>
+              <div class="timeline-playhead" id="timeline-playhead">
+                <span class="tl-playhead-knob"></span>
+              </div>
+              <div class="tl-tip" id="tl-tip" hidden></div>
+            </div>
+          </div>
+
+          <p class="timeline-hint muted" id="tl-hint">
+            Clique num bloco para ir até ele · <strong>arraste o corpo</strong> para mover a legenda ·
+            <strong>arraste as bordas</strong> para ajustar início/fim · clique na régua para posicionar o cursor
+          </p>
+        </div>
+      </section>
+
+      <!-- ── Painel lateral ── -->
+      <section class="panel side-panel">
+
+        <div class="tabs" id="tabs" role="tablist">
+          <button class="tab is-active" data-tab="script" type="button" role="tab">Roteiro</button>
+          <button class="tab" data-tab="sync" type="button" role="tab">
+            Sincronismo <span class="tab-count" id="sync-count" hidden>0</span>
+          </button>
+          <button class="tab" data-tab="editor" type="button" role="tab">
+            Editor <span class="tab-count" id="editor-count" hidden>0</span>
+          </button>
+        </div>
+
+        <!-- ▸ Aba: Roteiro -->
+        <div class="tab-panel is-active" data-panel="script">
+          <p class="hint">
+            Cole o texto ou importe um arquivo <strong>.txt</strong>.
+            <strong>Uma linha = uma legenda.</strong>
+          </p>
+
+          <div class="dropzone dropzone-sm" id="dropzone-text" role="button" tabindex="0">
+            <span class="dropzone-icon dropzone-icon-sm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </span>
+            <div>
+              <h4>Arraste um arquivo .txt</h4>
+              <p>ou clique para selecionar</p>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="btn-load-txt" type="button">Selecionar</button>
+            <input type="file" id="text-file-input" accept=".txt,text/plain" hidden>
+          </div>
+
+          <textarea id="script-input" class="textarea textarea-lg" spellcheck="false"
+            placeholder="Digite ou cole aqui as legendas…&#10;Uma linha por legenda.&#10;&#10;Exemplo:&#10;Bem-vindo ao canal!&#10;Hoje vamos falar sobre…&#10;Fica até o final."></textarea>
+
+          <div class="row-between">
+            <span class="muted" id="line-count">0 linhas</span>
+            <button class="btn btn-ghost btn-sm" id="btn-clear-script" type="button">Limpar texto</button>
+          </div>
+
+          <div class="settings-card">
+            <h4>Sincronismo</h4>
+            <label class="field">
+              Intervalo entre uma legenda e outra
+              <select class="select" id="gap-select">
+                <option value="0">Sem intervalo (0 ms)</option>
+                <option value="40">40 ms</option>
+                <option value="80" selected>80 ms — recomendado</option>
+                <option value="120">120 ms</option>
+                <option value="200">200 ms</option>
+                <option value="300">300 ms</option>
+              </select>
+            </label>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="btn-prepare" type="button">
+            Preparar sincronismo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- ▸ Aba: Sincronismo -->
+        <div class="tab-panel" data-panel="sync">
+          <div class="sync-status">
+            <div class="sync-status-head">
+              <span class="status-pill" id="sync-state-pill">
+                <span class="pill-dot"></span>
+                <span id="sync-state-label">Inativo</span>
+              </span>
+              <span class="muted" id="sync-progress-label">0 de 0 legendas</span>
+            </div>
+            <div class="progress"><span class="progress-bar" id="sync-progress-bar"></span></div>
+          </div>
+
+          <div class="current-line" id="current-line">
+            <div class="current-line-head">
+              <span class="rec-dot" id="rec-dot" aria-hidden="true"></span>
+              <span class="current-line-label" id="current-line-label">Aguardando preparação</span>
+              <span class="current-line-time mono" id="current-line-time">+0,000 s</span>
+            </div>
+            <p class="current-line-text" id="current-line-text">Prepare o roteiro para começar a sincronizar.</p>
+          </div>
+
+          <h4 class="section-title">A seguir</h4>
+          <ul class="upcoming" id="upcoming">
+            <li class="upcoming-empty muted">Nenhuma legenda na fila.</li>
+          </ul>
+
+          <div class="sync-actions">
+            <button class="btn btn-primary btn-block" id="btn-sync-toggle" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><polygon points="7 4 20 12 7 20" fill="currentColor"/></svg>
+              <span id="btn-sync-toggle-label">Iniciar sincronismo</span>
+            </button>
+            <div class="sync-actions-row">
+              <button class="btn btn-ghost" id="btn-sync-undo" type="button" disabled>↶ Desfazer <kbd>⌫</kbd></button>
+              <button class="btn btn-ghost" id="btn-sync-end" type="button" disabled>⏹ Encerrar</button>
+              <button class="btn btn-ghost" id="btn-sync-reset" type="button" disabled>♻ Reiniciar</button>
+            </div>
+          </div>
+
+          <div class="keymap">
+            <div class="keymap-row">
+              <kbd>Espaço</kbd>
+              <span>Marca o início (ou fim) da legenda atual</span>
+            </div>
+            <div class="keymap-row">
+              <kbd>Enter</kbd>
+              <span>Encerra a legenda atual e pausa a mídia</span>
+            </div>
+            <div class="keymap-row">
+              <kbd>⌫</kbd>
+              <span>Desfaz a última marcação</span>
+            </div>
+            <div class="keymap-row">
+              <kbd>←</kbd><kbd>→</kbd>
+              <span>Avança ou volta 5 segundos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ▸ Aba: Editor -->
+        <div class="tab-panel" data-panel="editor">
+          <div class="editor-toolbar">
+            <span class="muted" id="editor-summary">Nenhuma legenda sincronizada ainda.</span>
+            <div class="editor-toolbar-actions">
+              <button class="btn btn-ghost btn-sm" id="btn-auto-fix" type="button" disabled>Auto-ajustar tempos</button>
+              <button class="btn btn-ghost btn-sm" id="btn-clear-cues" type="button" disabled>Limpar marcações</button>
+            </div>
+          </div>
+
+          <div class="cue-list" id="cue-list">
+            <div class="empty-state">
+              <span class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="3"/>
+                  <line x1="7" y1="10" x2="17" y2="10"/>
+                  <line x1="7" y1="14" x2="13" y2="14"/>
+                </svg>
+              </span>
+              <h4>O editor aparece aqui</h4>
+              <p>Prepare o roteiro e sincronize as legendas para revisar cada uma delas.</p>
+            </div>
+          </div>
+
+          <div class="export-card">
+            <h4>Exportar</h4>
+            <label class="field">
+              Nome do arquivo
+              <div class="input-wrap">
+                <input class="input" id="export-filename" type="text" value="legendas" spellcheck="false">
+                <span class="input-suffix">.srt</span>
+              </div>
+            </label>
+            <div class="export-actions">
+              <button class="btn btn-primary btn-block" id="btn-save" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Salvar arquivo .SRT
+              </button>
+              <button class="btn btn-ghost btn-block" id="btn-copy" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copiar para a área de transferência
+              </button>
+            </div>
+            <p class="export-note muted" id="export-note">O arquivo será salvo no local escolhido por você.</p>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+
+  <!-- ══════════════ MÓDULOS ══════════════ -->
+  <script src="js/utils.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui/icons.js"></script>
+  <script src="js/ui/toast.js"></script>
+  <script src="js/ui/tabs.js"></script>
+  <script src="js/media/player.js"></script>
+  <script src="js/text/scriptInput.js"></script>
+  <script src="js/sync/synchronizer.js"></script>
+  <script src="js/editor/cueEditor.js"></script>
+  <script src="js/timeline/timeline.js"></script>
+  <script src="js/export/srt.js"></script>
+  <script src="js/overlay.js"></script>
+  <script src="js/steps.js"></script>
+  <script src="js/keyboard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

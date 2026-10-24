@@ -1,3 +1,6 @@
+## [Preview](https://misbka.github.io/Legend-SRT-Generator/)
+
+
 # 🎬 Legendário — Gerador de Legendas SRT
 
 Estúdio completo para criar legendas **.srt** com sincronismo em tempo real:
